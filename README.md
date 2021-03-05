@@ -19,3 +19,16 @@ applications.  There is an OVIS module in OpenCV that uses OGRE, but it is not i
 `opencv-contrib-python` installation by default.  So we will need to build from source.
 
 The docker folder has Dockerfile examples for building OpenCV with OGRE support.
+
+I have successfully run the [ovis demo](https://github.com/opencv/opencv_contrib/blob/master/modules/ovis/samples/ovis_demo.py)
+by running
+
+```
+docker build -t cv_ovis -f docker/Dockerfile .
+docker run --rm -ti --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v $(pwd):/data cv_ovis /bin/bash
+python3 ovis_demo.py
+```
+
+It is slow though, since it isn't running on GPU.
+
+
