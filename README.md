@@ -31,4 +31,9 @@ python3 ovis_demo.py
 
 It is slow though, since it isn't running on GPU.
 
+## Marker Preparation
+
+Generate marker images with `generate_markers.py` or use the [MarkerPrinter](https://github.com/opencv/opencv_contrib/tree/master/modules/aruco/misc/pattern_generator)
+which supports svg/pdf, but doesn't support as many dictionaries.
+
 
