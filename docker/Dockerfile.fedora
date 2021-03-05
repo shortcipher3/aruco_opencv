@@ -1,0 +1,130 @@
+FROM fedora
+ENV WORKSPACE=/workspace
+
+RUN dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+  && dnf -y install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
+  && dnf install -y \
+  make \
+  automake \
+  gcc \
+  gcc-c++ \
+  ca-certificates \
+  cmake \
+  ffmpeg-devel \
+  hdf5-devel \
+  git \
+  gphoto2 \
+  graphviz \
+  libgphoto2-devel \
+  gstreamer1-devel \
+  gstreamer1-plugins-bad-free \
+  gstreamer1-plugins-bad-free-devel \
+  gstreamer1-plugins-base \
+  gstreamer1-plugins-base-devel \
+  gstreamer1-plugins-good \
+  gstreamer1-plugins-ugly \
+  gstreamer1-libav \
+  gstreamer1-plugins-base-tools \
+  gstreamer1-plugins-base-devel \
+  gstreamer1-plugins-good \
+  gstreamer1-plugins-good-extras \
+  gstreamer1-plugins-ugly \
+  gstreamer1-plugins-bad-free \
+  gstreamer1-plugins-bad-free-devel \
+  gstreamer1-plugins-bad-free-extras \
+  gtk2-devel \
+  libjpeg-devel \
+  lapack-devel \ 
+  lame-libs \
+  ogre-overlay \
+  ogre-property \
+  ogre-utils \
+  ogre-volume \
+  ogre-terrain \
+  ogre-samples \
+  ogre-devel \
+  openblas-devel \
+  tbb-devel \
+  libtheora-devel \
+  libv4l-devel \
+  libvorbis-devel \
+  libxml2 \
+  libxml2-devel \
+  xvidcore-devel \
+  pkg-config \
+  python3 \
+  python3-devel \
+  python3-gstreamer1 \
+  python3-numpy \
+  python3-pip \
+  python3-qt5 \
+  python3-setuptools \
+  unzip \
+  v4l-utils \
+  vim \
+  wget \
+  x264 \
+  yasm \
+  && dnf clean all \
+  && rm -rf /var/cache/dnf/
+
+RUN pip3 install \
+  Cython \
+  Pillow \
+  RISE \
+  av \
+  bokeh \
+  easydict \
+  flask \
+  hickle \
+  imageio \
+  jupyter \
+  jupyterlab \
+  lxml \
+  matplotlib \
+  moviepy \
+  pandas \
+  pims \
+  pymongo \
+  pyyaml \
+  scikit-image \
+  scipy \
+  six \
+  sk-video \
+  sklearn \
+  tensorboard \
+  werkzeug
+
+RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
+  jupyter-nbextension install rise --py --sys-prefix && \
+  jupyter-nbextension enable rise --py --sys-prefix && \
+  jupyter serverextension enable --py jupyterlab --sys-prefix
+
+ENV OPENCV_ROOT=/opt/opencv
+ENV CONTRIB_ROOT=/opt/opencv_contrib
+
+RUN git clone --depth 1 https://github.com/opencv/opencv.git $OPENCV_ROOT \
+  && git clone --depth 1 https://github.com/opencv/opencv_contrib.git $CONTRIB_ROOT \
+  && mkdir $OPENCV_ROOT/build \
+  && cd $OPENCV_ROOT/build \
+  && cmake \
+  -D CMAKE_INSTALL_PREFIX=/usr/local \
+  -D OPENCV_EXTRA_MODULES_PATH="$CONTRIB_ROOT/modules" \
+  -D PYTHON2_EXECUTABLE="/usr/bin/python3.9" \
+  -D PYTHON_INCLUDE_DIR="/usr/include/python3.9" \
+  -D PYTHON_INCLUDE_DIR2="/usr/include/x86_64-linux-gnu/python3.9" \
+  -D PYTHON_LIBRARY="/usr/lib/x86_64-linux-gnu/libpython3.9.so" \
+  -D PYTHON3_NUMPY_INCLUDE_DIRS="/usr/local/lib/python3.9/dist-packages/numpy/core/include/" \
+  -D BUILD_DOCS=OFF \
+  -D BUILD_EXAMPLES=OFF \
+  -D BUILD_opencv_ovis=ON \
+  -D WITH_EIGEN=ON \
+  -D WITH_GPHOTO2=ON \
+  -D WITH_GSTREAMER=ON \
+  -D WITH_LAPACK=ON \
+  -D WITH_TBB=ON \
+  $OPENCV_ROOT/build $OPENCV_ROOT
+
+# ENVIRONMENT SETUP
+RUN mkdir $WORKSPACE
+WORKDIR $WORKSPACE
