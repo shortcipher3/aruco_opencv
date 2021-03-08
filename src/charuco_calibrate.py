@@ -34,7 +34,10 @@ decimator = 0
 for i in range(1000):
 
     ret,frame = cap.read()
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    try:
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    except:
+        break
     res = cv2.aruco.detectMarkers(gray, dictionary)
 
     if len(res[0])>0:

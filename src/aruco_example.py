@@ -5,23 +5,45 @@
 import cv2
 import numpy as np
 
-adict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_6X6_250)
+import argparse
 
+parser = argparse.ArgumentParser(description='Calibrate a camera with ArUco markers')
+parser.add_argument('--input', default='data/singlemarkersoriginal.jpg', type=str, help='path to the input image')
+parser.add_argument('--output', default='output/singlemarkersoutput.jpg', type=str, help='path to the output image')
+parser.add_argument('--dictionary', default='DICT_6X6_250', choices=[x for x in dir(cv2.aruco) if x.startswith('DICT')], help='ArUco dictionary to generate markers for (default: %(default)s)')
+parser.add_argument('--camera-matrix', default=None, type=str, help='path to the camera matrix and distortion coefficients, if None uses the default')
 
-img = cv2.imread('data/singlemarkersoriginal.jpg')
-corners, ids, rejected = cv2.aruco.detectMarkers(img, adict)
-#corners, ids, rejected = cv2.aruco.detectMarkers(img, adict, camera_matrix, dist_coef)
-corners, ids = cv2.aruco.detectMarkers(img, adict)[:2]
+args = parser.parse_args()
+
+dictionary = cv2.aruco.Dictionary_get(getattr(cv2.aruco, args.dictionary))
+
+img = cv2.imread(args.input)
+if args.camera_matrix is None:
+    cameraMatrix = cv2.getDefaultNewCameraMatrix(np.diag([800, 800, 1]), img.shape[:2], True)
+    distCoeff = None
+else:
+    arr = np.load(args.camera_matrix)
+    cameraMatrix = arr['cameraMatrix']
+    distCoeff = arr['distCoeffs']
+
+# detect and draw markers
+detector_params = cv2.aruco.DetectorParameters_create()
+#detector_params.minMarkerDistanceRate = 0.2
+corners, ids, rejected = cv2.aruco.detectMarkers(img, dictionary=dictionary, parameters=detector_params, cameraMatrix=cameraMatrix, distCoeff=distCoeff)
 output = cv2.aruco.drawDetectedMarkers(img, corners, ids)
 
+# draw rejected markers
 for reject in rejected:
     pts = reject.reshape((-1,1,2)).astype(np.int32)
     cv2.polylines(output,[pts],True,(0,255,255))
 
-cameraMatrix = cv2.getDefaultNewCameraMatrix(np.diag([800, 800, 1]), img.shape[:2], True)
-rvecs, tvecs, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners, 0.05, cameraMatrix, None)
-#cv2.estimatePoseSingleMarkers(corners, markerLength, cameraMatrix, distCoeffs[, rvecs[, tvecs[, _objPoints]]]) -> rvecs, tvecs, _objPoints
-for i in range(ids.shape[0]):
-    output = cv2.aruco.drawAxis(output, cameraMatrix, None, rvecs[i, :], tvecs[i, :], 0.1)
-    #cv2.drawAxis(image, cameraMatrix, distCoeffs, rvec, tvec, length) -> image
-cv2.imwrite('output/singlemarkersoutput.jpg', output)
+# estimate and draw marker pose
+rvecs, tvecs, _objPoints = cv2.aruco.estimatePoseSingleMarkers(corners, 0.05, cameraMatrix, distCoeff)
+if ids is not None:
+    for i in range(ids.shape[0]):
+        output = cv2.aruco.drawAxis(output, cameraMatrix, distCoeff, rvecs[i, :], tvecs[i, :], 0.1)
+else:
+    print("No markers found!")
+    print(f"corners {corners} ids {ids} rejected {rejected}")
+
+cv2.imwrite(args.output, output)
