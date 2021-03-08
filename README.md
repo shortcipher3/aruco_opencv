@@ -25,6 +25,7 @@ by running
 
 ```
 docker build -t cv_ovis -f docker/Dockerfile .
+xhost +
 docker run --rm -ti --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v $(pwd):/data cv_ovis /bin/bash
 python3 ovis_demo.py
 ```

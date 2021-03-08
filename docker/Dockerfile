@@ -138,8 +138,8 @@ RUN touch /usr/lib/x86_64-linux-gnu/libOgreGLSupport.a \
 
 # ENVIRONMENT SETUP
 RUN mkdir $WORKSPACE \
-  && ln -s /usr/lib/x86_64-linux-gnu/OGRE-1.12/ /usr/lib/x86_64-linux-gnu/OGRE
-  && wget https://github.com/OGRECave/ogre/raw/master/Samples/Media/packs/cubemap.zip \
+  && ln -s /usr/lib/x86_64-linux-gnu/OGRE-1.12/ /usr/lib/x86_64-linux-gnu/OGRE \
+  && wget https://github.com/OGRECave/ogre/raw/master/Samples/Media/packs/cubemap.zip  -O /usr/share/OGRE/Media/packs/cubemap.zip \
   && wget https://github.com/OGRECave/ogre/raw/master/Samples/Media/packs/cubemapsJS.zip -O /usr/share/OGRE/Media/packs/cubemapsJS.zip \
   && wget https://github.com/OGRECave/ogre/raw/master/Samples/Media/packs/dragon.zip -O /usr/share/OGRE/Media/packs/dragon.zip \
   && wget https://github.com/OGRECave/ogre/raw/master/Samples/Media/packs/fresneldemo.zip -O /usr/share/OGRE/Media/packs/fresneldemo.zip \
@@ -148,6 +148,7 @@ RUN mkdir $WORKSPACE \
   && wget https://github.com/OGRECave/ogre/raw/master/Samples/Media/packs/skybox.zip -O /usr/share/OGRE/Media/packs/skybox.zip \
   && wget https://github.com/OGRECave/ogre/raw/master/Samples/Media/packs/Sinbad.zip -O /usr/share/OGRE/Media/packs/Sinbad.zip \
   && wget https://github.com/OGRECave/ogre/raw/master/Samples/Media/packs/DamagedHelmet.zip -O /usr/share/OGRE/Media/packs/DamagedHelmet.zip \
+  && mkdir -p /usr/share/OGRE/Media/volumeTerrain/ \
   && wget https://github.com/OGRECave/ogre/raw/master/Samples/Media/volumeTerrain/volumeTerrainBig.zip -O /usr/share/OGRE/Media/volumeTerrain/volumeTerrainBig.zip
 WORKDIR $WORKSPACE
 
