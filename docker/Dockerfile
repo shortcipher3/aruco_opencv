@@ -24,6 +24,7 @@ RUN apt-get update \
   libavformat-dev \
   libavresample-dev \
   libavutil-dev \
+  libcanberra-gtk-module \
   libdc1394-22-dev \
   libfreetype6-dev \
   libgphoto2-dev \
