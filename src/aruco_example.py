@@ -7,7 +7,7 @@ import numpy as np
 
 import argparse
 
-parser = argparse.ArgumentParser(description='Calibrate a camera with ArUco markers')
+parser = argparse.ArgumentParser(description='Run detection on a single image')
 parser.add_argument('--input', default='data/singlemarkersoriginal.jpg', type=str, help='path to the input image')
 parser.add_argument('--output', default='output/singlemarkersoutput.jpg', type=str, help='path to the output image')
 parser.add_argument('--dictionary', default='DICT_6X6_250', choices=[x for x in dir(cv2.aruco) if x.startswith('DICT')], help='ArUco dictionary to generate markers for (default: %(default)s)')
