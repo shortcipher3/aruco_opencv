@@ -4,7 +4,7 @@ import cv2
 import argparse
 
 parser = argparse.ArgumentParser(description='Generate ArUco marker images in png format')
-parser.add_argument('--size', default=400, type=int, help='size in pixels of the side length of the marker')
+parser.add_argument('--size', default=10000, type=int, help='size in pixels of the side length of the marker')
 parser.add_argument('--output-prefix', default='marker', type=str, help='prefix to store the generated markers at')
 parser.add_argument('--dictionary', default='DICT_ARUCO_ORIGINAL', choices=[x for x in dir(cv2.aruco) if x.startswith('DICT')], help='ArUco dictionary to generate markers for (default: %(default)s)')
 
