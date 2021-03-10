@@ -51,7 +51,7 @@ actions = {
 }
 win.playEntityAnimation("figure", actions[9], True)
 
-k = 0
+
 while True:
     keypress = cv2.ovis.waitKey(1)
     #print(keypress)
